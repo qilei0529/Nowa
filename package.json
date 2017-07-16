@@ -1,0 +1,19 @@
+{
+  "name": "Nowa",
+  "version": "1.0.0",
+  "description": "a test web site",
+  "main": "index.js",
+  "author": "qilei",
+  "license": "MIT",
+  "scripts": {
+    "dev": "NODE_ENV=dev DEBUG=Rou* nodemon app.js"
+  },
+  "dependencies": {
+    "debug": "^2.6.8",
+    "koa": "^2.3.0",
+    "koa-logger": "^3.0.1",
+    "koa-router": "^7.2.1",
+    "koa-swig": "^2.2.1",
+    "lodash": "^4.17.4"
+  }
+}
