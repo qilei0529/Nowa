@@ -8,11 +8,14 @@ const config = {
     },
 
     router : {
-        '/'     : 'home',
+        '/'         : 'home',
+        '/detail'   : 'home/detail',
+        '/detail2'   : 'home/detail2'
     },
 
     router_views : {
-    },
+    }
+
 }
 
 

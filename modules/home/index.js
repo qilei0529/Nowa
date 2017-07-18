@@ -1,6 +1,6 @@
 
 
-const Home = async (ctx , next ) => {
+const Home = async (ctx ) => {
     await ctx.render('home' ,{ title: 'home'});
 }
 
