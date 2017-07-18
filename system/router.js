@@ -17,11 +17,10 @@ const MODULES_PATH = path.join( __dirname, '../' , config.modules_dir || 'module
 const ROUTERS = config.router || {};
 
 // 获取 data 
-// 注入 render 
-// 渲染 view
+// 注入 model 
 
 // load 
-function loadRender( dir ){
+function loadModel( dir ){
     const p = path.join( MODULES_PATH , dir + '.js')
     if ( fs.existsSync(p) ) {
         return require(p)
@@ -37,10 +36,10 @@ function routerBox(){
         value = path.join(value , 'index')
     }
 
-    let render = loadRender( value );
-    if ( render ) {
+    let model = loadModel( value );
+    if ( model ) {
       debug('Create router:' , key, value );
-      router.get( key , render);
+      router.get( key , model);
     }else{
       debug('Error  router:' , key, value );
     }
