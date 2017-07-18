@@ -6,12 +6,13 @@
   "author": "qilei",
   "license": "MIT",
   "scripts": {
+    "start": "NODE_ENV=dev DEBUG=Rou* node app.js",
     "dev": "NODE_ENV=dev DEBUG=Rou* nodemon app.js"
   },
   "dependencies": {
-    "art-template": "^4.12.1",
     "debug": "^2.6.8",
     "koa": "^2.3.0",
+    "koa-art-template": "^1.1.1",
     "koa-logger": "^3.0.1",
     "koa-router": "^7.2.1",
     "lodash": "^4.17.4"

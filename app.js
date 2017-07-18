@@ -13,7 +13,7 @@ const app = new Koa();
 app.use(koa_logger());
 
 // 添加 静态 渲染引擎
-app.use(render());
+app.use(render(app));
 
 // 添加 动态路由
 app.use(router());

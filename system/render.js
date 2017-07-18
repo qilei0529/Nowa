@@ -10,50 +10,19 @@ const path = require('path');
 const config = require('../config');
 const debug  = require('debug')('Rou.render');
 
-const template = require('art-template');
+const render = require('koa-art-template');
 
-
-const renderMan = () => {
-
+const renderMan = ( app ) => {
     let settings = {
         debug: true,
         writeResp: true,
         extname: '.html',
+        cache: true,
         root: path.join(__dirname, '../views'),
     }
-
+    render(app, settings);
     return async (ctx, next) => {
-        // 根据 不同路由 配置对应的render
-        
-        if ( ctx.render ) {
-            await next();
-            return;          
-        }
-
-        function render(filename, data) {
-            debug(`render: ${filename}`);
-            settings.filename = filename;
-            const render = template.compile(settings);
-            return render(data);
-        }
-
-        ctx.render = function (view, _context) {
-            const ctx = this;
-            const context = Object.assign({}, ctx.state, _context);
-            const html = render(view, context);
-            const writeResp = context.writeResp === false ? false : (context.writeResp || settings.writeResp);
-
-            if (writeResp) {
-                ctx.type = 'html';
-                ctx.body = html;
-            } else {
-                return html;
-            }
-        };
-
-
         await next();
-
     }
 
 }
