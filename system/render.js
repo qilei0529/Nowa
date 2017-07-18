@@ -5,62 +5,60 @@
 
 'use strict';
 
-const swig = require('koa-swig');
 const path = require('path');
 
 const config = require('../config');
 const debug  = require('debug')('Rou.render');
 
-// render 缓存，for 多路由
-const renderCache = new Map();
+const template = require('art-template');
 
-// 清理 缓存
-function clearRenderCache() {
-    debug('clear render cache')
-    swig.swig.invalidateCache();
-}
 
-function renderBox(){
+const renderMan = () => {
 
-    let setting = {
+    let settings = {
+        debug: true,
+        writeResp: true,
+        extname: '.html',
         root: path.join(__dirname, '../views'),
-        autoescape: true,
-        cache: 'memory', // disable, set to false 
-        ext: 'html'
     }
-
-    //设置 默认 render
-    let render = swig(setting);
-    debug('create:', 'default')
-    renderCache.set('default', render);
 
     return async (ctx, next) => {
         // 根据 不同路由 配置对应的render
-        debug('hello')
-        let router = ctx.path;
-        let key = config.router_views[router] || null ;
-        // debug(key);
-        if ( key ) {
-            ctx.router = router;
-        }else{
-            key = 'default';
+        
+        if ( ctx.render ) {
+            await next();
+            return;          
         }
-        let cache = renderCache.get(key) || null;
-        if ( cache ){
-            render = cache;
-        }else{
-            debug('create:', key)
-            let opts = Object.assign({}, setting, { root: key });
-            render = swig(opts);
-            renderCache.set(key, render);
+
+        function render(filename, data) {
+            debug(`render: ${filename}`);
+            settings.filename = filename;
+            const render = template.compile(settings);
+            return render(data);
         }
-        ctx.clearRenderCache = clearRenderCache;
-        ctx.render = render;
+
+        ctx.render = function (view, _context) {
+            const ctx = this;
+            const context = Object.assign({}, ctx.state, _context);
+            const html = render(view, context);
+            const writeResp = context.writeResp === false ? false : (context.writeResp || settings.writeResp);
+
+            if (writeResp) {
+                ctx.type = 'html';
+                ctx.body = html;
+            } else {
+                return html;
+            }
+        };
+
 
         await next();
+
     }
+
 }
 
 
 
-module.exports = renderBox;
+
+module.exports = renderMan;
