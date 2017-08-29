@@ -21,7 +21,7 @@ const ROUTERS = config.router || {};
 // 渲染 view
 
 // load 
-function loadRender( dir ){
+function loadModel( dir ){
     const p = path.join( MODULES_PATH , dir + '.js')
     if ( fs.existsSync(p) ) {
         return require(p)
@@ -36,11 +36,24 @@ function routerBox(){
     if ( value.indexOf('/') < 0 ) {
         value = path.join(value , 'index')
     }
+    
+    let method = 'get';
 
-    let render = loadRender( value );
-    if ( render ) {
-      debug('Create router:' , key, value );
-      router.get( key , render);
+    let METHOD_MAP = {
+      post: 'post',
+      get: 'get'
+    };
+
+    if ( key.indexOf(':') > 0 ) {
+      let m = key.split(':');
+      method = METHOD_MAP[m[0]] || 'get';
+      key = m[1];
+    }
+
+    let model = loadModel( value );
+    if ( model ) {
+      debug('Create router:' , method, key, value );
+      method == 'get' ? router.get( key , model) : router.post( key , model);
     }else{
       debug('Error  router:' , key, value );
     }
